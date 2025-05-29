@@ -9,7 +9,7 @@ export default function Success() {
   const [status, setStatus] = useState('Procesando...');
 
   useEffect(() => {
-    clearCart(); // Limpia carrito después del pago
+    clearCart();
     setStatus('Pago exitoso 🎉');
   }, []);
 
