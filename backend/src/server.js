@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 // import paymentRoutes from './routes/payments.js';
 import dotenv from 'dotenv';
+import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
 const app = express();
