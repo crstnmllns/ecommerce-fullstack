@@ -20,7 +20,7 @@ export const createCheckoutSession = async (req, res) => {
       cancel_url: `${req.headers.origin}/cancel`,
     });
 
-    res.json({ url: session.url });
+    res.json({ sessionId: session.id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
