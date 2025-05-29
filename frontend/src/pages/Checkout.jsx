@@ -1,36 +1,23 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
 import { loadStripe } from '@stripe/stripe-js';
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements
-} from '@stripe/react-stripe-js';
-import axios from 'axios';
+import api from '../services/api';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-function CheckoutForm() {
+export default function Checkout() {
   const { items, total, removeFromCart } = useContext(CartContext);
-  const stripe = useStripe();
-  const elements = useElements();
-  const [clientSecret, setClientSecret] = useState('');
 
-  const createPayment = async () => {
-    const { data } = await axios.post('/api/payments/create-payment', { items });
-    setClientSecret(data.clientSecret);
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
-    await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement)
-      }
+  const handleCheckout = async () => {
+    const stripe = await stripePromise;
+    const { data } = await api.post('/payments/create-checkout-session', {
+      items: items.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.qty || 1
+      }))
     });
-    alert('Pago completado con éxito 🎉');
+    stripe.redirectToCheckout({ url: data.url });
   };
 
   return (
@@ -59,33 +46,13 @@ function CheckoutForm() {
         </li>
       </ul>
 
-      {!clientSecret ? (
-        <button
-          onClick={createPayment}
-          className="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
-          disabled={items.length === 0}
-        >
-          Proceder al pago
-        </button>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <CardElement className="p-4 border rounded" />
-          <button
-            type="submit"
-            className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-          >
-            Confirmar pago
-          </button>
-        </form>
-      )}
+      <button
+        onClick={handleCheckout}
+        className="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+        disabled={items.length === 0}
+      >
+        Proceder al pago
+      </button>
     </div>
-  );
-}
-
-export default function Checkout() {
-  return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm />
-    </Elements>
   );
 }

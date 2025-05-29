@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import Checkout from './pages/Checkout';
+import Success from './pages/Success';
+import Cancel from './pages/Cancel';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import ProductForm from './pages/ProductForm';
@@ -27,6 +29,8 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/products/:id/edit" element={<ProductForm />} />
             <Route path="/products/new" element={<ProductForm />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
           </Routes>
         </div>
       </CartProvider>
