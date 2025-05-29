@@ -17,7 +17,7 @@ export default function Checkout() {
         quantity: item.qty || 1
       }))
     });
-    stripe.redirectToCheckout({ url: data.url });
+    stripe.redirectToCheckout({ sessionId: data.sessionId });
   };
 
   return (
