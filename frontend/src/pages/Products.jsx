@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import api from '../services/api';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 
@@ -10,14 +10,14 @@ export default function Products() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    axios.get('/api/products')
+    api.get('/products')
       .then(res => setList(res.data))
       .catch(err => console.error(err));
   }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar este producto?')) return;
-    await axios.delete(`/api/products/${id}`);
+    await api.delete(`/products/${id}`);
     setList(list.filter(p => p._id !== id));
   };
 

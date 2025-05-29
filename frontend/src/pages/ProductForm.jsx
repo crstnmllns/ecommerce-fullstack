@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 export default function ProductForm() {
@@ -18,14 +18,15 @@ export default function ProductForm() {
 
   useEffect(() => {
     if (isEdit) {
-      axios.get(`/api/products/${id}`)
+      api.get(`/products/${id}`)
         .then(res => setForm({
           name: res.data.name,
           description: res.data.description,
           price: res.data.price,
           imageURL: res.data.imageURL,
           stock: res.data.stock
-        }));
+        }))
+        .catch(err => console.error(err));
     }
   }, [id, isEdit]);
 
@@ -45,12 +46,16 @@ export default function ProductForm() {
       price: Number(form.price),
       stock: Number(form.stock),
     };
-    if (isEdit) {
-      await axios.put(`/api/products/${id}`, payload);
-    } else {
-      await axios.post('/api/products', payload);
+    try {
+      if (isEdit) {
+        await api.put(`/products/${id}`, payload);
+      } else {
+        await api.post('/products', payload);
+      }
+      nav('/products');
+    } catch (err) {
+      console.error('Error al guardar producto:', err);
     }
-    nav('/products');
   };
 
   return (
