@@ -3,7 +3,7 @@ import cors from 'cors';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
-// import paymentRoutes from './routes/payments.js';
+import paymentRoutes from './routes/payments.js';
 import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -32,7 +32,7 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-// app.use('/api/payments', paymentRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.use(errorHandler);
 
